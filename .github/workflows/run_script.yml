@@ -1,0 +1,27 @@
+name: Run Instagram to Telegram Bot
+
+on:
+  schedule:
+    - cron: '0 6,18 * * *'  # Runs at 06:00 and 18:00 UTC
+  workflow_dispatch:  # Allows manual runs
+
+jobs:
+  run_script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      
+      - name: Install dependencies
+        run: pip install instaloader python-telegram-bot pytz requests
+      
+      - name: Run script
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python instagram_to_telegram.py
