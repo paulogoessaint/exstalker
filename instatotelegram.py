@@ -5,7 +5,7 @@ import datetime
 import pytz
 
 # 🔹 Telegram Bot Credentials
-TELEGRAM_BOT_TOKEN = os.getenv("7625788120:AAETLQM6wUKQmz0emaK1ua6ktkW0wp51oGk")
+TELEGRAM_BOT_TOKEN = os.getenv("7625788120:AAHdYiPVE0V1XKqDqnm1tTzKri-fjtHbH6c")
 TELEGRAM_CHAT_ID = os.getenv("3510991")
 
 # 🔹 Instagram Users to Track
