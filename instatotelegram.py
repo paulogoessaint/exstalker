@@ -11,9 +11,15 @@ TELEGRAM_CHAT_ID = os.getenv("3510991")
 # 🔹 Instagram Users to Track
 INSTAGRAM_USERS = ["sashaux", "margo.pho"]
 
-# 🔹 Timezone Setup
-TIMEZONE = pytz.utc  # Change if needed (e.g., pytz.timezone("Europe/Berlin"))
-YESTERDAY = datetime.datetime.now(TIMEZONE) - datetime.timedelta(days=1)
+# 🔹 Timezone Setup (Lisbon Time)
+TIMEZONE = pytz.timezone("Europe/Lisbon")
+current_time = datetime.datetime.now(TIMEZONE)
+
+# Set the time to 9 AM Lisbon time
+if current_time.hour >= 9:
+    target_time = current_time.replace(hour=9, minute=0, second=0, microsecond=0)
+else:
+    target_time = (current_time - datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
 
 # 🔹 Instaloader Initialization
 L = instaloader.Instaloader(download_pictures=True, download_videos=True, filename_pattern="{target}_{date_utc}")
@@ -40,21 +46,20 @@ def download_and_send_stories():
             print(f"❌ Error downloading stories for {username}: {e}")
 
 def download_and_send_posts():
-    """Download and send Instagram posts from yesterday onward"""
+    """Download and send Instagram posts"""
     for username in INSTAGRAM_USERS:
         print(f"📥 Downloading posts for {username}...")
         try:
             profile = instaloader.Profile.from_username(L.context, username)
             for post in profile.get_posts():
-                post_date = post.date.replace(tzinfo=pytz.utc)  # Convert to UTC
-                if post_date >= YESTERDAY:
-                    print(f"✅ Found new post from {username} at {post_date}")
-                    L.download_post(post, target=username)
-                    for file in os.listdir(username):
-                        if file.endswith((".jpg", ".mp4")):
-                            print(f"📤 Sending {file} to Telegram...")
-                            send_media_to_telegram(os.path.join(username, file))
-                            os.remove(os.path.join(username, file))
+                # Always download and send posts (no date filter anymore)
+                print(f"✅ Found new post from {username} at {post.date}")
+                L.download_post(post, target=username)
+                for file in os.listdir(username):
+                    if file.endswith((".jpg", ".mp4")):
+                        print(f"📤 Sending {file} to Telegram...")
+                        send_media_to_telegram(os.path.join(username, file))
+                        os.remove(os.path.join(username, file))
         except Exception as e:
             print(f"❌ Error downloading posts for {username}: {e}")
 
