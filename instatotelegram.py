@@ -37,6 +37,7 @@ def download_and_send_stories():
         print(f"📥 Downloading stories for {username}...")
         try:
             L.download_stories(userids=[username], filename_target=f"{username}_stories")
+            print(f"Files in directory after downloading stories: {os.listdir()}")  # Check if files exist
             for file in os.listdir():
                 if file.startswith(username) and file.endswith((".jpg", ".mp4")):
                     print(f"📤 Sending {file} to Telegram...")
